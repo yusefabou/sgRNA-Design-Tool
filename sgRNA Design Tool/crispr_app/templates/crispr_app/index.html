@@ -1,0 +1,21 @@
+
+<h1> CRISPR sgRNA Design Tool </h1>
+
+<form method='POST' action='form.html'>
+	{% csrf_token %}
+	How many sgRNAs would you like to design? <br/>
+	<input type='text' name='number'><br/>
+	<input type="submit" value="submit" />
+</form>
+
+
+ <!-- <h1> CRISPR sgRNA Design Tool </h1>
+
+<form method='POST'>
+	{% csrf_token %}
+	Gene ID: <input type ="text" name="locus" id="locus"> <br/>
+	Range: <input type="text" name="start"> 
+		   <input type="text" name="end"><br/>
+	<input type="submit" value="Search" />
+</form>
+ -->

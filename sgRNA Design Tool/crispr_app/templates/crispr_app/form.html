@@ -1,0 +1,32 @@
+{% load staticfiles %}
+
+<head>
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+<link rel="stylesheet" href="{% static 'css/form.css' %}">
+
+
+<div>
+</div>
+</head>
+
+<body>
+<center>
+<div>
+<h1> CRISPR sgRNA Design Tool </h1>
+<form method='POST'>
+	{% csrf_token %}
+	Gene ID: <input type ="text" name="locus" id="locus"> <br/>
+	Range: <input type="text" name="start"> 
+		   <input type="text" name="end"><br/>
+	<input class="btn btn-default" type="submit" value="Search" />
+</form>
+</div>
+
+<div>
+{{ seq }} </br>
+{{ indices }} </br>
+{{ scores }}
+</div>
+</center>
+</body>
