@@ -10,9 +10,9 @@ sys.path.insert(0, '/Users/Yusef/Documents/Kitematic/crisprapp/hello_django_dock
 from rs2_score_calculator import calculateScore
 import cPickle as pickle
 import dill
+import time
 
 Entrez.email='yabourem@ucsd.edu'
-# Create your views here.
 
 def index(request):
 	template = loader.get_template('crispr_app/index.html')
@@ -45,14 +45,15 @@ def form(request):
 		# 	return HttpResponse(template.render({}, request))
 
 		#Get user input 
-		gi = request.POST.get('locus')
-		start = request.POST.get('start')
-		stop = request.POST.get('end')
+		# gi = request.POST.get('locus')
+		# start = request.POST.get('start')
+		# stop = request.POST.get('end')
 
 		#Fetch sequence data
 		Entrez.email = 'yabourem@ucsd.edu'
-		handle = Entrez.efetch(db='nucleotide',id='EU490707.1',rettype='gb',retmode='text', seq_start=1, seq_stop=200)
+		handle = Entrez.efetch(db='nucleotide',id='KP641121',rettype='gb',retmode='text', seq_start=1, seq_stop=200)
 		#handle = Entrez.efetch(db='nucleotide',id=gi,rettype='gb',retmode='text', seq_start=start, seq_stop=stop)
+		time.sleep(1)
 		record = SeqIO.read(handle, 'gb')
 		sequence = record.seq
 		handle.close()
@@ -72,7 +73,8 @@ def form(request):
 				complements.append(toScore[4:24])
 				PAMs.append(toScore[24:27])
 				scores.append(calculateScore(toScore, model)) 
-				indices.append(i)
+				indices.append(i+21)
+
 		#3-->5 (Reverse complement)
 		mySeq = Seq(sequence)
 		reverseComp = str(mySeq.reverse_complement())
@@ -82,16 +84,18 @@ def form(request):
 				complements.append(toScore[4:24])
 				PAMs.append(toScore[24:27])
 				scores.append(calculateScore(toScore, model)) 
-				indices.append(i)
-				print i
-				print reverseComp
+				indices.append(200-(i+21))
+		
+		#Visualize cut points in the sequence
+		for cut in sorted(indices, reverse=True):
+			sequence = sequence[:cut] + '['  + str(cut) + ']' + sequence[cut:]
 
 		#Put all sgRNA info into one array
 		#Note to self: careful with indices, as the user input starts at 1
 		for i in range(len(scores)):
 			temp = [scores[i], indices[i], complements[i], PAMs[i]]
 			sgRNAInfo.append(temp)
-
+	
 	context = {
 	'seq' : sequence,
 	'sgRNAInfo' : sgRNAInfo
