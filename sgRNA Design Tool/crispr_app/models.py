@@ -15,8 +15,21 @@ class Purpose(models.Model):
 	def __str__(self):
 		return self.purpose
 
-# class sgRNAForm(ModelForm):
-# 	class Meta:
-# 		model = GeneID
-# 		fields = ['geneID_text']
-# 	
+class RNA(models.Model):
+	sequence = models.CharField(max_length=30)
+	species = models.CharField(max_length=20)
+	zero_mismatch_count = models.IntegerField(blank=True, null=True)
+	one_mismatch_count = models.IntegerField(blank=True, null=True)
+	two_mismatch_count = models.IntegerField(blank=True, null=True)
+	three_mismatch_count = models.IntegerField(blank=True, null=True)
+	four_mismatch_count = models.IntegerField(blank=True, null=True)
+	five_mismatch_count = models.IntegerField(blank=True, null=True)
+	six_mismatch_count = models.IntegerField(blank=True, null=True)
+	off_target_score = models.DecimalField(blank=True, null=True, max_digits=5, decimal_places=2)
+
+	def __str__(self):
+		return self.sequence + ' ' + self.species
+
+
+	
+	

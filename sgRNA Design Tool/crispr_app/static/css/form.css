@@ -5,10 +5,11 @@ h1 a {
 .row {
 	border-radius: 15px;
 }
-/*
-.col-md-4 {
-	background-color: #f5f3f3;
-}*/
+
+
+select.form-control {
+	width: 80px;
+}
 
 .wordbreak{
 	width:100%;

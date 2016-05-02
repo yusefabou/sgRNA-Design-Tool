@@ -18,7 +18,11 @@
 						Gene ID: <input type ="text" name="locus" id="locus" placeholder="Accession or GI number"> <br/>
 						Range: <input type="text" name="start" placeholder="1"> 
 						<input type="text" name="end" placeholder="200"><br/>
-						<input class="btn btn-default" type="submit" value="Search" />
+							<select name="species" class="form-control"> 
+							  <option>Human</option>
+							  <option>Mouse</option>
+							</select>
+						<input class="btn btn-default" type="submit" value="Search">
 					</form>
 				</div>
 
@@ -28,7 +32,7 @@
 					<div class="col-md-12">{{ seq }}</div>
 				</div>
 				</div>
-				
+
 				<div class="row">
 					<div class="col-md-4">DNA Complement + PAM</div>
 					<div class="col-md-4">Activity Score</div>
