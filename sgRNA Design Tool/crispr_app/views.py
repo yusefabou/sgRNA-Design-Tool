@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
-from .models import GeneID
+from .models import RNA
 from .forms import NumberForm
 from Bio.Seq import Seq
 from Bio import Entrez, SeqIO
@@ -11,23 +11,15 @@ from rs2_score_calculator import calculateScore
 import cPickle as pickle
 import dill
 import time
-
 Entrez.email='yabourem@ucsd.edu'
 
 def index(request):
 	template = loader.get_template('crispr_app/index.html')
-	number = ''
-	if request.method == 'POST':
-		# locus = request.POST.get('locus')
-		# start = request.POST.get('start')
-		# end = request.POST.get('end')
-		# print start, end, locus
-		print request.POST['number']
+	sgRNAs = RNA.objects.all()
 
 	context = {
-		'number' : number,	
+		'sgRNAs' : sgRNAs,	
 	}
-	output = number
 	
 	return HttpResponse(template.render(context,request))
 
