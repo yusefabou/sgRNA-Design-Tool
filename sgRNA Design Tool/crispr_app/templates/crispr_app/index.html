@@ -6,39 +6,37 @@
 	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css"> 
 
 	<!-- My CSS file's here -->
+	<link rel="stylesheet" href="{% static 'css/index.css' %}">
 
 </head>
 
 <body>
+<center>
 	<div class="jumbotron">
+		<ol class="breadcrumb">
+			<li class="active">Home</li>
+			<li><a href="./form.html">Form</a></li>
+		</ol>
 		<h1> CRISPR sgRNA Design Tool </h1>
-		<label>Welcome</label><br/>
-		<p>Here are all of your sgRNA molecules</p>
-		{% for sgRNA in sgRNAs %}
+		<p>Welcome, here are all of your sgRNA molecules</p>
 	</div>
 	<div class='row'>
 		<div class="col-md-2">Sequence</div>
 		<div class="col-md-1">Species</div>
-		<div class="col-md-2">Off Target Score</div>
 		<div class="col-md-1">0 MM</div>
 		<div class="col-md-1">1 MM</div>
 		<div class="col-md-1">2 MM</div>
 		<div class="col-md-1">3 MM</div>
-		<div class="col-md-1">4 MM</div>
-		<div class="col-md-1">5 MM</div>
-		<div class="col-md-1">6 MM</div>
 	</div>
+	{% for sgRNA in sgRNAs %}
 	<div class='row'>
 		<div class="col-md-2">{{ sgRNA.sequence }}</div>
 		<div class="col-md-1">{{ sgRNA.species }}</div>
-		<div class="col-md-2">{{ sgRNA.off_target_score }}</div>
 		<div class="col-md-1">{{ sgRNA.zero_mismatch_count }}</div>
 		<div class="col-md-1">{{ sgRNA.one_mismatch_count }}</div>
 		<div class="col-md-1">{{ sgRNA.two_mismatch_count }}</div>
 		<div class="col-md-1">{{ sgRNA.three_mismatch_count }}</div>
-		<div class="col-md-1">{{ sgRNA.four_mismatch_count }}</div>
-		<div class="col-md-1">{{ sgRNA.five_mismatch_count }}</div>
-		<div class="col-md-1">{{ sgRNA.six_mismatch_count }}</div>
 	</div>
 	{% endfor %}
+</center>
 </body>

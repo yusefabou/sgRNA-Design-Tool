@@ -10,8 +10,11 @@
 
 <body>
 	<center>
-
 		<div class="jumbotron">
+			<ol class="breadcrumb">
+				<li><a href="./">Home</a></li>
+				<li class="active">Form</li>
+			</ol>
 			<h1> CRISPR sgRNA Design Tool </h1>
 			<form method='POST'>
 				{% csrf_token %}

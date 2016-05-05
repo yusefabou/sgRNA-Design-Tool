@@ -2,7 +2,6 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 from .models import RNA
-from .forms import NumberForm
 from Bio.Seq import Seq
 from Bio import Entrez, SeqIO
 import sys
@@ -11,6 +10,8 @@ from rs2_score_calculator import calculateScore
 import cPickle as pickle
 import dill
 import time
+import subprocess
+import os 
 Entrez.email='yabourem@ucsd.edu'
 
 def index(request):
@@ -40,10 +41,12 @@ def form(request):
 		# gi = request.POST.get('locus')
 		# start = request.POST.get('start')
 		# stop = request.POST.get('end')
+		#species = request.POST.get('species')
+		species = 'Human'
 
 		#Fetch sequence data
 		Entrez.email = 'yabourem@ucsd.edu'
-		handle = Entrez.efetch(db='nucleotide',id='KP641121',rettype='gb',retmode='text', seq_start=1, seq_stop=200)
+		handle = Entrez.efetch(db='nucleotide',id='NG_011793',rettype='gb',retmode='text', seq_start=1, seq_stop=200)
 		#handle = Entrez.efetch(db='nucleotide',id=gi,rettype='gb',retmode='text', seq_start=start, seq_stop=stop)
 		time.sleep(1)
 		record = SeqIO.read(handle, 'gb')
@@ -78,6 +81,23 @@ def form(request):
 				scores.append(calculateScore(toScore, model)) 
 				indices.append(200-(i+21))
 		
+		#Calculate alignments of complement+PAM sequence via bowtie
+		mismatch_dict = {}
+		indexname = '/Users/Yusef/Documents/bowtie/indexes/GCA_000001405.15_GRCh38_no_alt_analysis_set'
+		for i in range(len(complements)):
+			molecule = complements[i] + PAMs[i]
+			if RNA.objects.filter(sequence=molecule, species=species).count() == 1:
+				continue
+			mismatch_dict[molecule] = [-1, 0, 0, 0]
+			alignments = subprocess.Popen(['bowtie', '-c', '-a', '-v 3', indexname, molecule], stdout=subprocess.PIPE)
+			for line in alignments.stdout:
+				mismatches = line.count(':')
+				mismatch_dict[complements[i] + PAMs[i]][mismatches] += 1
+		for key, value in mismatch_dict.iteritems():
+			rna = RNA.objects.create(sequence=key, species=species, zero_mismatch_count=value[0], 
+				one_mismatch_count=value[1], two_mismatch_count=value[2], three_mismatch_count=value[3])
+			 
+
 		#Visualize cut points in the sequence
 		for cut in sorted(indices, reverse=True):
 			sequence = sequence[:cut] + '['  + str(cut) + ']' + sequence[cut:]
