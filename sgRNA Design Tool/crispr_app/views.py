@@ -46,7 +46,7 @@ def form(request):
 
 		#Fetch sequence data
 		Entrez.email = 'yabourem@ucsd.edu'
-		handle = Entrez.efetch(db='nucleotide',id='NG_011793',rettype='gb',retmode='text', seq_start=1, seq_stop=200)
+		handle = Entrez.efetch(db='nucleotide',id='NG_011793',rettype='gb',retmode='text')
 		#handle = Entrez.efetch(db='nucleotide',id=gi,rettype='gb',retmode='text', seq_start=start, seq_stop=stop)
 		time.sleep(1)
 		record = SeqIO.read(handle, 'gb')
@@ -79,7 +79,7 @@ def form(request):
 				complements.append(toScore[4:24])
 				PAMs.append(toScore[24:27])
 				scores.append(calculateScore(toScore, model)) 
-				indices.append(200-(i+21))
+				indices.append(len(sequence)-(i+21))
 		
 		#Calculate alignments of complement+PAM sequence via bowtie
 		mismatch_dict = {}
@@ -92,12 +92,14 @@ def form(request):
 			alignments = subprocess.Popen(['bowtie', '-c', '-a', '-v 3', indexname, molecule], stdout=subprocess.PIPE)
 			for line in alignments.stdout:
 				mismatches = line.count(':')
-				mismatch_dict[complements[i] + PAMs[i]][mismatches] += 1
-		for key, value in mismatch_dict.iteritems():
-			rna = RNA.objects.create(sequence=key, species=species, zero_mismatch_count=value[0], 
-				one_mismatch_count=value[1], two_mismatch_count=value[2], three_mismatch_count=value[3])
+				mismatch_dict[molecule][mismatches] += 1
+			#Add the complement+PAM and alignment information to database
+			rna = RNA.objects.create(sequence=molecule, species=species, 
+				zero_mismatch_count=mismatch_dict[molecule][0], 
+				one_mismatch_count=mismatch_dict[molecule][1], 
+				two_mismatch_count=mismatch_dict[molecule][2], 
+				three_mismatch_count=mismatch_dict[molecule][3])
 			 
-
 		#Visualize cut points in the sequence
 		for cut in sorted(indices, reverse=True):
 			sequence = sequence[:cut] + '['  + str(cut) + ']' + sequence[cut:]
