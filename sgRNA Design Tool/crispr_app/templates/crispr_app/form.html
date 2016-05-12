@@ -18,9 +18,11 @@
 			<h1> CRISPR sgRNA Design Tool </h1>
 			<form method='POST'>
 				{% csrf_token %}
-				Gene ID: <input type ="text" name="locus" id="locus" placeholder="Accession or GI number"> <br/>
+				Gene ID: <input type="text" name="locus" id="locus" placeholder="Accession or GI number"> <br/>
 				Range: <input type="text" name="start" placeholder="1"> 
 				<input type="text" name="end" placeholder="200"><br/>
+				or </br>
+				Sequence: <textarea name="singleSeq" cols="50" rows="5"> </textarea> <br/>
 				<select name="species" class="form-control"> 
 					<option>Human</option>
 					<option>Mouse</option>

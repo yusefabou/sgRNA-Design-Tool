@@ -13,6 +13,8 @@ import dill
 import time
 import subprocess
 import os 
+from operator import itemgetter
+
 Entrez.email='yabourem@ucsd.edu'
 
 def index(request):
@@ -35,28 +37,43 @@ def form(request):
 	sequence = ''
 	sgRNAInfo = []
 	species = ''
-
+	gi = ''
+	start = ''
+	stop = ''
 	if request.method == 'POST':
+		print request.POST.get('singleSeq')
 		#Refresh page if fields empty
-		# if not gi and not start and not stop:
-		# 	return HttpResponse(template.render({}, request))
+		if not request.POST.get('locus') and not request.POST.get('singleSeq'):
+			return HttpResponse(template.render({}, request))
 
 		#Get user input 
-		gi = request.POST.get('locus')
-		start = request.POST.get('start')
-		stop = request.POST.get('end')
-		#species = request.POST.get('species')
-		species = 'Human'
+		if request.POST.get('locus'):
+			gi = request.POST.get('locus')
+		else:
+			sequence = request.POST.get('singleSeq')
+			print sequence
+			sequence = sequence.strip().upper()
+			if len(sequence) < 30:
+				return HttpResponse(template.render({}, request))
 
-		#Fetch sequence data
-		Entrez.email = 'yabourem@ucsd.edu'
-		#handle = Entrez.efetch(db='nucleotide',id=gi,rettype='gb',retmode='text')
-		handle = Entrez.efetch(db='nucleotide',id=gi,rettype='gb',retmode='text', seq_start=start, seq_stop=stop)
-		time.sleep(1)
-		record = SeqIO.read(handle, 'gb')
-		sequence = record.seq
-		handle.close()
-		sequence = str(sequence)
+		if request.POST.get('start'):	
+			start = request.POST.get('start')
+		if request.POST.get('end'):
+			stop = request.POST.get('end')
+		species = request.POST.get('species')
+
+		#Fetch sequence data if needed
+		if gi:
+			Entrez.email = 'yabourem@ucsd.edu'
+			if start and stop:
+				handle = Entrez.efetch(db='nucleotide',id=gi,rettype='gb',retmode='text', seq_start=start, seq_stop=stop)
+			else:
+				handle = Entrez.efetch(db='nucleotide',id=gi,rettype='gb',retmode='text')
+			time.sleep(1)
+			record = SeqIO.read(handle, 'gb')
+			sequence = record.seq
+			handle.close()
+			sequence = str(sequence)
 
 		#Calculate scores of sequence, and collect other sgRNA information
 		model_file = open('crispr_app/V3_model_nopos.pickle', 'rb')
@@ -117,10 +134,10 @@ def form(request):
 			temp = [complements[i], PAMs[i], scores[i], indices[i], rna.zero_mismatch_count, 
 			rna.one_mismatch_count, rna.two_mismatch_count, rna.three_mismatch_count]
 			sgRNAInfo.append(temp)
-	
+		
 	context = {
 	'seq' : sequence,
-	'sgRNAInfo' : sgRNAInfo,
+	'sgRNAInfo' : sorted(sgRNAInfo, key=itemgetter(2)),
 	'species' : species
 	}
 	return HttpResponse(template.render(context, request))
