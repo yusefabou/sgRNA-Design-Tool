@@ -74,6 +74,7 @@ def form(request):
 			sequence = record.seq
 			handle.close()
 			sequence = str(sequence)
+			print len(sequence)
 
 		#Calculate scores of sequence, and collect other sgRNA information
 		model_file = open('crispr_app/V3_model_nopos.pickle', 'rb')
@@ -137,14 +138,14 @@ def form(request):
 		
 	context = {
 	'seq' : sequence,
-	'sgRNAInfo' : sorted(sgRNAInfo, key=itemgetter(2)),
+	'sgRNAInfo' : sorted(sgRNAInfo, key=itemgetter(2), reverse=True),
 	'species' : species
 	}
 	return HttpResponse(template.render(context, request))
 
 
-def result(request):
-	template = loader.get_template('crispr_app/result.html')
+def guidelines(request):
+	template = loader.get_template('crispr_app/guidelines.html')
 	context = {
 	}
 	return HttpResponse(template.render(context, request))
