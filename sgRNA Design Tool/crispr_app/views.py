@@ -40,8 +40,10 @@ def form(request):
 	gi = ''
 	start = ''
 	stop = ''
+	crispr_type = ''
+	#Populate variables when user submits form
 	if request.method == 'POST':
-		print request.POST.get('singleSeq')
+		print request.POST.get('crispr_type')
 		#Refresh page if fields empty
 		if not request.POST.get('locus') and not request.POST.get('singleSeq'):
 			return HttpResponse(template.render({}, request))
@@ -74,7 +76,11 @@ def form(request):
 			sequence = record.seq
 			handle.close()
 			sequence = str(sequence)
+			if stop < start:
+				mySeq = Seq(sequence)
+				sequence = str(mySeq.reverse_complement())
 			print len(sequence)
+			print sequence[0:50]
 
 		#Calculate scores of sequence, and collect other sgRNA information
 		model_file = open('crispr_app/V3_model_nopos.pickle', 'rb')

@@ -23,6 +23,10 @@
 				Gene ID: <input type="text" name="locus" id="locus" placeholder="Accession or GI number"> <br/>
 				Range: <input type="text" name="start" placeholder="1"> 
 				<input type="text" name="end" placeholder="200"><br/>
+				<label class="radio-inline"><input type="radio" name="crispr_type" value="entire">Entire Gene</label>
+				<label class="radio-inline"><input type="radio" name="crispr_type" value="activation">Activation</label>
+				<label class="radio-inline"><input type="radio" name="crispr_type" value="repression">Repression</label>
+				<br/>
 				or </br>
 				Sequence: <textarea name="singleSeq" cols="50" rows="5"> </textarea> <br/>
 				<select name="species" class="form-control"> 
@@ -33,33 +37,35 @@
 			</form>
 		</div>
 
-	{% if seq and sgRNAInfo %}
+		{% if seq and sgRNAInfo %}
 		<div class="wordbreak"
 		<div class="row">
 			<div class="col-md-12">{{ seq }}</div>
 		</div>
 	</div>
 
-	<div class="row">
-		<div class="col-xs-3">DNA Complement + PAM</div>
-		<div class="col-xs-2">Activity Score</div>
-		<div class="col-xs-1">Cut Point</div>
-		<div class="col-xs-1"> 0 mismatch</div>
-		<div class="col-xs-1"> 1 mismatch</div>
-		<div class="col-xs-1"> 2 mismatch</div>
-		<div class="col-xs-1"> 3 mismatch</div>
-	</div>
+	<table class="table table-striped">
+		<tr>
+			<td><strong>DNA Complement + PAM</strong></td>
+			<td><strong>Activity Score</strong></td>
+			<td><strong>Cut Point</strong></td>
+			<td><strong>0 mismatch</strong></td>
+			<td><strong>1 mismatch</strong></td>
+			<td><strong>2 mismatch</strong></td>
+			<td><strong>3 mismatch</strong></td>
+		</tr>
 		{% for sgRNA in sgRNAInfo %}
-		<div class="row">
-			<div class="col-xs-3">{{ sgRNA.0 }} {{ sgRNA.1 }}</div>
-			<div class="col-xs-2">{{ sgRNA.2 }}</div>
-			<div class="col-xs-1">{{ sgRNA.3 }}</div>
-			<div class="col-xs-1">{{ sgRNA.4 }}</div>
-			<div class="col-xs-1">{{ sgRNA.5 }}</div>
-			<div class="col-xs-1">{{ sgRNA.6 }}</div>
-			<div class="col-xs-1">{{ sgRNA.7 }}</div>
-		</div>
-		{% endfor %}
+		<tr>
+			<td>{{ sgRNA.0 }} {{ sgRNA.1 }}</td>
+			<td>{{ sgRNA.2 }}</td>
+			<td>{{ sgRNA.3 }}</td>
+			<td>{{ sgRNA.4 }}</td>
+			<td>{{ sgRNA.5 }}</td>
+			<td>{{ sgRNA.6 }}</td>
+			<td>{{ sgRNA.7 }}</td>
+		</tr>
+	{% endfor %}
+	</table>
 
 	{% endif %}
 
