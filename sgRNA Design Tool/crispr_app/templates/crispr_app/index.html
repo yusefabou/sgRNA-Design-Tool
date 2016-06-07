@@ -11,33 +11,114 @@
 </head>
 
 <body>
-<center>
-	<div class="jumbotron">
-		<ol class="breadcrumb">
-			<li class="active">Home</li>
-			<li><a href="./form.html">Form</a></li>
-			<li><a href="./guidelines.html">Guidelines</a></li>
-		</ol>
-		<h1> CRISPR sgRNA Design Tool </h1>
-		<p>Welcome, here are all of your sgRNA molecules</p>
+	<center>
+		<!-- Form input header -->
+		<div class="jumbotron">
+			<ol class="breadcrumb">
+				<li class="active">Home</li>
+				<li><a href="./form.html">Form</a></li>
+				<li><a href="./guidelines.html">Guidelines</a></li>
+			</ol>
+			<h1> CRISPR sgRNA Design Tool </h1>
+			<form method='POST'>
+				{% csrf_token %}
+				Gene: <input type="text" name="gene_name" id="gene_name" placeholder="Gene Name"> <br/>
+				<label class="radio-inline"><input type="radio" name="crispr_type" value="activation">Activation</label>
+				<label class="radio-inline"><input type="radio" name="crispr_type" value="repression">Repression</label>
+				<label class="radio-inline"><input type="radio" name="crispr_type" value="knock_out">Knock Out</label>
+				<br/>
+				or </br>
+				Sequence: <textarea name="singleSeq" cols="50" rows="5"> </textarea> <br/>
+				<select name="species" class="form-control"> 
+					<option>Human</option>
+				</select>
+				<input class="btn btn-default" type="submit" value="Search">
+			</form>
+		</div>
+	</center>
+
+	<!-- Error output -->
+	{% if unavailable %}
+	<table class="table table-striped">
+		<div class="row">
+			<div class="col-md-12">{{ unavailable }}</div>
+		</div>
+	</table>
+	{% endif %}
+
+	<!-- Output repression/activation/single sequence information, center-aligned -->
+	{% if seq and sgRNAInfo %}
+	<div class="wordbreak">
+		<strong>Sequence: </strong> {{ seq}} 
 	</div>
-	<div class='row'>
-		<div class="col-md-2">Sequence</div>
-		<div class="col-md-1">Species</div>
-		<div class="col-md-1">0 MM</div>
-		<div class="col-md-1">1 MM</div>
-		<div class="col-md-1">2 MM</div>
-		<div class="col-md-1">3 MM</div>
+
+	<table class="table table-striped">
+		<tr>
+			<td> <strong>Gene: </strong> {{ gene_name}} </td>
+		</tr>
 	</div>
-	{% for sgRNA in sgRNAs %}
-	<div class='row'>
-		<div class="col-md-2">{{ sgRNA.sequence }}</div>
-		<div class="col-md-1">{{ sgRNA.species }}</div>
-		<div class="col-md-1">{{ sgRNA.zero_mismatch_count }}</div>
-		<div class="col-md-1">{{ sgRNA.one_mismatch_count }}</div>
-		<div class="col-md-1">{{ sgRNA.two_mismatch_count }}</div>
-		<div class="col-md-1">{{ sgRNA.three_mismatch_count }}</div>
-	</div>
+
+	<!-- Output table, left-aligned -->
+	<tr>
+		<td><strong>DNA Complement + PAM</strong></td>
+		<td><strong>Activity Score</strong></td>
+		<td><strong>Cut Point</strong></td>
+		<td><strong>0 mismatch</strong></td>
+		<td><strong>1 mismatch</strong></td>
+		<td><strong>2 mismatch</strong></td>
+		<td><strong>3 mismatch</strong></td>
+	</tr>
+	{% for sgRNA in sgRNAInfo %}
+	<tr>
+		<td>{{ sgRNA.0 }} {{ sgRNA.1 }}</td>
+		<td>{{ sgRNA.2 }}</td>
+		<td>{{ sgRNA.3 }}</td>
+		<td>{{ sgRNA.4 }}</td>
+		<td>{{ sgRNA.5 }}</td>
+		<td>{{ sgRNA.6 }}</td>
+		<td>{{ sgRNA.7 }}</td>
+	</tr>
 	{% endfor %}
-</center>
+</table>
+{% endif %}
+
+<!-- Else output exon info-->
+{% if exons %}
+<table class="table table-striped">
+	<tr>
+		<td> <strong>Gene: </strong> {{ gene_name}} </td>
+	</tr>
+</div>
+
+<!-- Output table, left-aligned -->
+<tr>
+	<td><strong>DNA Complement + PAM</strong></td>
+	<td><strong>Activity Score</strong></td>
+	<td><strong>Exon Number</strong></td>
+	<td><strong>Cut Point</strong></td>
+	<td><strong>0 mismatch</strong></td>
+	<td><strong>1 mismatch</strong></td>
+	<td><strong>2 mismatch</strong></td>
+	<td><strong>3 mismatch</strong></td>
+</tr>
+
+{% for key, values in exons.iteritems %}
+{% for sgRNA in values.4 %}
+<tr>
+	<td>{{ sgRNA.0 }} {{ sgRNA.1 }}</td>
+	<td>{{ sgRNA.2 }}</td>
+	<td>{{ key }} </td>
+	<td>{{ sgRNA.3 }}</td>
+	<td>{{ sgRNA.4 }}</td>
+	<td>{{ sgRNA.5 }}</td>
+	<td>{{ sgRNA.6 }}</td>
+	<td>{{ sgRNA.7 }}</td>
+</tr>
+{% endfor %}
+{% endfor %}
+
+</table>
+
+{% endif %}
 </body>
+</div>
