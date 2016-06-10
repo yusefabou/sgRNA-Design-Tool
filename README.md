@@ -1,7 +1,7 @@
 # sgRNA Design Tool 
 
 ## Step 1: Install Dependencies
-Download and install:
+Download and install: </br>
 bowtie (not bowtie2) </br> 
 django 1.9.5 </br>
 python 2.7.9 </br>
