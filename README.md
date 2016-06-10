@@ -2,9 +2,9 @@
 
 ## Step 1: Install Dependencies
 Download and install:
-bowtie (not bowtie2)
-django 1.9.5
-python 2.7.9
+bowtie (not bowtie2) </br> 
+django 1.9.5 </br>
+python 2.7.9 </br>
 biopython (python module)
 
 ## Step 2: Change user-specific directories 
