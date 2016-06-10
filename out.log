@@ -1,0 +1,16 @@
+
+VCFtools - 0.1.15
+(C) Adam Auton and Anthony Marcketta 2009
+
+Parameters as interpreted:
+	--gzvcf /Users/Yusef/Downloads/BGI_VCF_Phased_hg18/CMS_nonCMS_chr11.annotated.phased.vcf.gz
+	--freq
+	--stdout
+	--indv 52-AA
+
+Using zlib version: 1.2.5
+Keeping individuals in 'keep' list
+After filtering, kept 1 out of 20 Individuals
+Outputting Frequency Statistics...
+After filtering, kept 290896 out of a possible 290896 Sites
+Run Time = 4.00 seconds
